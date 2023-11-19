@@ -6,7 +6,7 @@ const dogsRouter = Router()
 
 dogsRouter.get("/", getDogsHandler)
 dogsRouter.get("/:id", getDetailHandler)
-dogsRouter.get("/", getNameHandler)
+//dogsRouter.get("/name/:name", getNameHandler)
 dogsRouter.post("/", postDogHandler)
 
 module.exports = dogsRouter

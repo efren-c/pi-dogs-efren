@@ -2,9 +2,14 @@ const { getAllDogs, getDetailDog, getNameDogs, postDog } = require("../controlle
 
 
 const getDogsHandler = async (req, res) => {
+    const { name } = req.query
     try {
-        const allDogs = await getAllDogs()
-        return res.status(200).json(allDogs)
+        if (!name) {
+            const allDogs = await getAllDogs()
+            return res.status(200).json(allDogs)
+        } else {
+            return getNameHandler(req, res)
+        }
     } catch (error) {
         return res.status(404).send(error)
     }

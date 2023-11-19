@@ -31,8 +31,9 @@ const getNameDogs = async (name) => {
     const dogFilterAPI = ((await infoAPI()).filter((dog) => dog.name === name))
     const dogFilterDB = await Dog.findAll({ where: { name: name } })
 
-    return [...dogFilterAPI, dogFilterDB]
+    return [...dogFilterAPI, ...dogFilterDB]
 }
+
 
 const postDog = async (name, height, weight, lifeSpan, image, temperaments) => {
     const newDog = await Dog.create({ name, height, weight, lifeSpan, image, temperaments })

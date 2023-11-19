@@ -1,19 +1,36 @@
 const axios = require("axios")
+const { Temperament } = require("../db")
 const { API_KEY } = process.env
 
 const getAllTemperaments = async () => {
-    const temperamentsAPI = (await axios(`https://api.thedogapi.com/v1/breeds?api_key=${API_KEY}`))
-        .then((response) => response.data)
+    let aDbTemperaments = await Temperament.findAll()
 
-    const temperaments = new Set()
+    if (aDbTemperaments.length === 0) {
+        const temperamentsAPI = (await axios(`https://api.thedogapi.com/v1/breeds?api_key=${API_KEY}`)).data
 
-    response.map((dog) => {
-        dog.temperaments.map((temperament) => {
-            temperaments.add(temperament.temperaments.name)
+        const allTemperaments = []
+        temperamentsAPI.forEach((dog) => {
+            const temperament = dog.temperament
+
+            if (temperament) {
+                const splitTemperaments = temperament.split(", ")
+                allTemperaments.push(...splitTemperaments)
+            }
         })
-    })
 
-    return temperamentsAPI
+        aDbTemperaments = [...new Set(allTemperaments)]
+
+        aDbTemperaments.forEach((name) => {
+            postTemperament(name)
+        })
+    }
+    return aDbTemperaments
+}
+
+const postTemperament = async (name) => {
+    const newTemperament = await Temperament.create({ name })
+
+    return newTemperament
 }
 
 module.exports = getAllTemperaments
